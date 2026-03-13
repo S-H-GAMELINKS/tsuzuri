@@ -1,0 +1,35 @@
+<% content_for(:title) { "#{@account&.display_name || 'Tsuzuri'}" } %>
+
+<% if @account %>
+  <% content_for(:head) do %>
+    <meta name="fediverse:creator" content="<%= @account.fediverse_creator.presence || "@#{@account.username}@#{Tsuzuri.domain}" %>" />
+    <meta property="og:title" content="<%= @account.display_name || 'Tsuzuri' %>" />
+    <meta property="og:description" content="<%= @account.summary %>" />
+    <meta property="og:url" content="<%= root_url %>" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="<%= @account.display_name || 'Tsuzuri' %>" />
+    <link rel="alternate" type="application/activity+json" href="<%= activity_pub_actor_url(username: @account.username) %>" />
+  <% end %>
+<% end %>
+
+<main class="container">
+  <header>
+    <h1><%= @account&.display_name || "Tsuzuri" %></h1>
+    <% if @account&.summary.present? %>
+      <p><%= @account.summary %></p>
+    <% end %>
+  </header>
+
+  <% if @posts.any? %>
+    <% @posts.each do |post| %>
+      <article>
+        <h2><%= link_to post.title, post_path(post) %></h2>
+        <time datetime="<%= post.published_at&.iso8601 %>">
+          <%= post.published_at&.strftime("%Y-%m-%d") %>
+        </time>
+      </article>
+    <% end %>
+  <% else %>
+    <p>No posts yet.</p>
+  <% end %>
+</main>

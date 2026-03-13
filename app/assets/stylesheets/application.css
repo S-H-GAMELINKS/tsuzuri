@@ -1,0 +1,49 @@
+/*
+ * This is a manifest file that'll be compiled into application.css.
+ *
+ * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
+ * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
+ * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
+ * depending on specificity.
+ *
+ * Consider organizing styles into separate files for maintainability.
+ */
+
+article {
+  border: none !important;
+  padding: 0;
+}
+
+/* Flash messages */
+.alert {
+  padding: 1rem 1.5rem;
+  margin-bottom: 1rem;
+  border: var(--border-width, 1px) solid var(--border, #898EA4);
+  border-radius: var(--standard-border-radius, 5px);
+}
+
+.alert-success {
+  background-color: #d4edda;
+  border-color: #4caf50;
+  color: #256029;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  border-color: #e53935;
+  color: #842029;
+}
+
+@media (prefers-color-scheme: dark) {
+  .alert-success {
+    background-color: #1b3d1f;
+    border-color: #4caf50;
+    color: #a5d6a7;
+  }
+
+  .alert-danger {
+    background-color: #3d1b1f;
+    border-color: #e53935;
+    color: #ef9a9a;
+  }
+}

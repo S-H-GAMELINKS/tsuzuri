@@ -1,0 +1,33 @@
+# Rails defaults
+/log/*
+/tmp/*
+/storage/*
+!/log/.keep
+!/tmp/.keep
+!/storage/.keep
+
+/public/assets
+
+# Environment
+.env*.local
+
+# SQLite databases
+/storage/*.sqlite3
+db/*.sqlite
+
+# Keys
+config/keys/
+config/master.key
+config/credentials/*.key
+
+# Node
+node_modules/
+
+# Testing
+spec/examples.txt
+
+# IDE
+.idea/
+.vscode/
+
+.env

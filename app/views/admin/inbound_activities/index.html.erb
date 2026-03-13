@@ -1,0 +1,28 @@
+<% content_for(:title) { "Inbound Activities - Admin" } %>
+
+<main class="container">
+  <h1>Inbound Activities</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Status</th>
+        <th>Signature</th>
+        <th>Received</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @inbound_activities.each do |activity| %>
+        <tr>
+          <td><%= activity.activity_type %></td>
+          <td><%= activity.status %></td>
+          <td><%= activity.signature_verified ? "Verified" : "Unverified" %></td>
+          <td><%= activity.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+          <td><%= link_to "Detail", admin_inbound_activity_path(activity) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</main>

@@ -1,0 +1,36 @@
+<% content_for(:title) { "Followers - Admin" } %>
+
+<main class="container">
+  <h1>Followers</h1>
+
+  <% if notice %>
+    <div class="alert alert-success"><%= notice %></div>
+  <% end %>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Actor</th>
+        <th>Domain</th>
+        <th>State</th>
+        <th>Followed At</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @followers.each do |follower| %>
+        <tr>
+          <td><%= follower.remote_actor.preferred_username || follower.remote_actor.actor_uri %></td>
+          <td><%= follower.remote_actor.domain %></td>
+          <td><%= follower.state %></td>
+          <td><%= follower.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+          <td>
+            <% if follower.active? %>
+              <%= button_to "Remove", admin_follower_path(follower), method: :delete, data: { turbo_confirm: "Remove this follower?" } %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</main>

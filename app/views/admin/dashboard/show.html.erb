@@ -1,0 +1,52 @@
+<% content_for(:title) { "Admin Dashboard - Tsuzuri" } %>
+
+<main class="container">
+  <h1>Dashboard</h1>
+
+  <% if notice %>
+    <div class="alert alert-success"><%= notice %></div>
+  <% end %>
+  <% if alert %>
+    <div class="alert alert-danger"><%= alert %></div>
+  <% end %>
+
+  <div class="stats">
+    <dl>
+      <dt>Total Posts</dt>
+      <dd><%= @posts_count %></dd>
+
+      <dt>Published</dt>
+      <dd><%= @published_count %></dd>
+
+      <dt>Active Followers</dt>
+      <dd><%= @followers_count %></dd>
+
+      <dt>Pending Inbound Activities</dt>
+      <dd><%= @pending_activities %></dd>
+    </dl>
+  </div>
+
+  <h2>Recent Posts</h2>
+  <% if @recent_posts.any? %>
+    <ul>
+      <% @recent_posts.each do |post| %>
+        <li>
+          <%= link_to post.title, edit_admin_post_path(post) %>
+          (<%= post.state %>)
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p>No posts yet. <%= link_to "Create one", new_admin_post_path %>.</p>
+  <% end %>
+
+  <nav>
+    <ul>
+      <li><%= link_to "Posts", admin_posts_path %></li>
+      <li><%= link_to "Followers", admin_followers_path %></li>
+      <li><%= link_to "Inbound Activities", admin_inbound_activities_path %></li>
+      <li><%= link_to "Settings", admin_settings_path %></li>
+      <li><%= link_to "Self-Destruct", admin_self_destruct_path %></li>
+    </ul>
+  </nav>
+</main>

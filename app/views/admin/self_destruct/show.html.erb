@@ -1,0 +1,68 @@
+<% content_for(:title) { "Self-Destruct - Admin" } %>
+
+<main class="container">
+  <h1>Self-Destruct</h1>
+
+  <% if notice %>
+    <div class="alert alert-success"><%= notice %></div>
+  <% end %>
+  <% if alert %>
+    <div class="alert alert-danger"><%= alert %></div>
+  <% end %>
+
+  <% if @run.nil? || @run.completed? %>
+    <% if @plan %>
+      <h2>Impact Summary</h2>
+      <dl>
+        <dt>Published Posts</dt>
+        <dd><%= @plan.published_posts_count %></dd>
+
+        <dt>Active Followers</dt>
+        <dd><%= @plan.active_followers_count %></dd>
+
+        <dt>Known Servers</dt>
+        <dd><%= @plan.known_servers_count %></dd>
+
+        <dt>Estimated Delete Activities</dt>
+        <dd><%= @plan.estimated_activities %></dd>
+      </dl>
+    <% end %>
+
+    <p><strong>This action is irreversible.</strong> It will send Delete activities for all posts and the actor to all known servers.</p>
+
+    <%= button_to "Initiate Self-Destruct", admin_self_destruct_path, method: :post, data: { turbo_confirm: "Are you sure you want to initiate self-destruct?" } %>
+
+  <% elsif @run.state == "pending" %>
+    <h2>Confirm Self-Destruct</h2>
+    <p>Self-destruct has been initiated. Enter the confirmation token to proceed.</p>
+
+    <%= form_with(url: confirm_admin_self_destruct_path, method: :post) do |f| %>
+      <div class="field">
+        <%= f.label :confirmation_token, "Confirmation Token" %>
+        <%= f.text_field :confirmation_token, value: @run.confirmation_token %>
+      </div>
+      <div class="actions">
+        <%= f.submit "Confirm Self-Destruct", data: { turbo_confirm: "This is your FINAL confirmation. Proceed?" } %>
+      </div>
+    <% end %>
+
+  <% elsif @run.running_or_draining? %>
+    <h2>Self-Destruct In Progress</h2>
+    <dl>
+      <dt>State</dt>
+      <dd><%= @run.state %></dd>
+
+      <dt>Progress</dt>
+      <dd><%= @run.progress_percentage %>%</dd>
+
+      <dt>Delivered</dt>
+      <dd><%= @run.delivered_activities %> / <%= @run.total_activities %></dd>
+
+      <dt>Failed</dt>
+      <dd><%= @run.failed_activities %></dd>
+
+      <dt>Started At</dt>
+      <dd><%= @run.started_at %></dd>
+    </dl>
+  <% end %>
+</main>

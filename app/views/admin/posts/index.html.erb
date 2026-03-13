@@ -1,0 +1,40 @@
+<% content_for(:title) { "Posts - Admin" } %>
+
+<main class="container">
+  <h1>Posts</h1>
+
+  <% if notice %>
+    <div class="alert alert-success"><%= notice %></div>
+  <% end %>
+
+  <p><%= link_to "New Post", new_admin_post_path %></p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>State</th>
+        <th>Published At</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @posts.each do |post| %>
+        <tr>
+          <td><%= link_to post.title, edit_admin_post_path(post) %></td>
+          <td><%= post.state %></td>
+          <td><%= post.published_at&.strftime("%Y-%m-%d %H:%M") %></td>
+          <td>
+            <%= link_to "Edit", edit_admin_post_path(post) %>
+            <% if post.draft? %>
+              <%= button_to "Publish", admin_publish_post_path(post), method: :post, data: { turbo_confirm: "Publish this post?" } %>
+            <% end %>
+            <% if post.published? %>
+              <%= link_to "Delete (federate)", admin_delete_post_activity_path(post), data: { turbo_method: :post, turbo_confirm: "Delete and send Delete activity?" } %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</main>

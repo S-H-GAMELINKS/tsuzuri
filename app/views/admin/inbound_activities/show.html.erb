@@ -1,0 +1,35 @@
+<% content_for(:title) { "Inbound Activity ##{@inbound_activity.id} - Admin" } %>
+
+<main class="container">
+  <h1>Inbound Activity #<%= @inbound_activity.id %></h1>
+
+  <dl>
+    <dt>Type</dt>
+    <dd><%= @inbound_activity.activity_type %></dd>
+
+    <dt>Activity ID</dt>
+    <dd><%= @inbound_activity.activity_id %></dd>
+
+    <dt>Status</dt>
+    <dd><%= @inbound_activity.status %></dd>
+
+    <dt>Signature Verified</dt>
+    <dd><%= @inbound_activity.signature_verified %></dd>
+
+    <dt>Remote Actor</dt>
+    <dd><%= @inbound_activity.remote_actor&.actor_uri || "N/A" %></dd>
+
+    <% if @inbound_activity.error_message.present? %>
+      <dt>Error</dt>
+      <dd><%= @inbound_activity.error_message %></dd>
+    <% end %>
+
+    <dt>Received</dt>
+    <dd><%= @inbound_activity.created_at %></dd>
+  </dl>
+
+  <h2>Raw JSON</h2>
+  <pre><code><%= JSON.pretty_generate(@inbound_activity.parsed_json) rescue @inbound_activity.raw_json %></code></pre>
+
+  <%= link_to "Back", admin_inbound_activities_path %>
+</main>

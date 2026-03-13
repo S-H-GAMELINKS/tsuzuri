@@ -1,0 +1,31 @@
+<% content_for(:title) { "#{@post.title} - #{@account.display_name || 'Tsuzuri'}" } %>
+
+<% content_for(:head) do %>
+  <meta name="fediverse:creator" content="<%= @account.fediverse_creator.presence || "@#{@account.username}@#{Tsuzuri.domain}" %>" />
+  <meta property="og:title" content="<%= @post.title %>" />
+  <meta property="og:description" content="<%= truncate(strip_tags(@post.html_body), length: 200) %>" />
+  <meta property="og:url" content="<%= post_url(@post) %>" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="<%= @account.display_name || 'Tsuzuri' %>" />
+  <meta property="article:published_time" content="<%= @post.published_at&.iso8601 %>" />
+  <meta property="article:author" content="<%= @account.activity_pub_url %>" />
+  <link rel="alternate" type="application/activity+json" href="<%= post_url(@post) %>" />
+<% end %>
+
+<main class="container">
+  <article>
+    <header>
+      <h1><%= @post.title %></h1>
+      <time datetime="<%= @post.published_at&.iso8601 %>">
+        <%= @post.published_at&.strftime("%Y-%m-%d") %>
+      </time>
+    </header>
+    <div class="post-body">
+      <%= raw @post.html_body %>
+    </div>
+  </article>
+
+  <nav>
+    <%= link_to "Back to posts", posts_path %>
+  </nav>
+</main>
