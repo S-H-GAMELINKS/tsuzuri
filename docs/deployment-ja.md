@@ -2,11 +2,24 @@
 
 ## 前提条件
 
-- Docker がインストール済み
+- ローカル環境に Docker がインストール済み
 - デプロイ先サーバへの SSH アクセス
 - ドメインの DNS 設定済み（A レコードがサーバ IP を指す）
 
 ## 初期セットアップ
+
+### 0. サーバ初期化（Ubuntu）
+
+デプロイ先サーバで以下を実行してください:
+
+```bash
+sudo apt update
+sudo apt upgrade -y
+sudo apt install -y docker.io curl git
+sudo usermod -a -G docker <Server Username>
+```
+
+`usermod` 実行後は、対象ユーザーで再ログイン（または `newgrp docker`）が必要です。
 
 ### 1. `.env` の設定
 
@@ -18,9 +31,13 @@ cp .env.sample .env
 
 ```bash
 SERVER_IP=203.0.113.1          # デプロイ先サーバの IP アドレス
+SERVER_USERNAME=ubuntu         # SSH ユーザー名
+SERVER_SSH_PORT=22             # SSH ポート
 TSUZURI_BASE_URL=https://your-domain.example
 TSUZURI_DOMAIN=your-domain.example
 TSUZURI_USERNAME=your-username
+TSUZURI_EMAIL=admin@example.com
+TSUZURI_PASSWORD=change-me
 TSUZURI_SOURCE_URL=https://github.com/S-H-GAMELINKS/tsuzuri
 ```
 
@@ -28,15 +45,29 @@ TSUZURI_SOURCE_URL=https://github.com/S-H-GAMELINKS/tsuzuri
 
 `TSUZURI_SOURCE_URL` は AGPL 準拠のためソースコードへのリンクに使われます。fork の場合は自分のリポジトリ URL に変更してください。
 
-### 2. `.kamal/secrets` の設定
+`TSUZURI_EMAIL` / `TSUZURI_PASSWORD` は初回 `db:prepare` 時の seed アカウント作成に使われます（既に `accounts` が存在する場合は seed はスキップされます）。
+
+### 2. production credentials の生成
+
+`config/credentials/production.yml.enc` と `config/credentials/production.key` を生成します:
 
 ```bash
-RAILS_MASTER_KEY=$(cat config/master.key)
+RAILS_ENV=production bin/rails credentials:edit
+```
+
+エディタを閉じると、`production.yml.enc` と `production.key` が作成（または更新）されます。
+
+### 3. `.kamal/secrets` の設定
+
+```bash
+RAILS_MASTER_KEY=$(cat config/credentials/production.key)
 ```
 
 `RAILS_MASTER_KEY` のみ設定すれば十分です。ローカルレジストリではレジストリ用のパスワードは不要です。
 
-### 3. レジストリについて
+`config/credentials/production.key` は秘密情報なので Git に含めないでください。
+
+### 4. レジストリについて
 
 デフォルトの `registry.server: localhost:5555` はそのままで OK です。Kamal がデプロイ先サーバ上にローカルレジストリを自動で起動するため、外部レジストリのアカウントやトークンは不要です。
 

@@ -2,11 +2,24 @@
 
 ## Prerequisites
 
-- Docker installed
+- Docker installed on your local machine
 - SSH access to your deployment server
 - Domain DNS configured (A record pointing to server IP)
 
 ## Initial Setup
+
+### 0. Prepare the server (Ubuntu)
+
+Run the following on the deployment server:
+
+```bash
+sudo apt update
+sudo apt upgrade -y
+sudo apt install -y docker.io curl git
+sudo usermod -a -G docker <Server Username>
+```
+
+After `usermod`, re-login as that user (or run `newgrp docker`) before deploying.
 
 ### 1. Configure `.env`
 
@@ -18,9 +31,13 @@ cp .env.sample .env
 
 ```bash
 SERVER_IP=203.0.113.1          # Your deployment server's IP address
+SERVER_USERNAME=ubuntu         # SSH username
+SERVER_SSH_PORT=22             # SSH port
 TSUZURI_BASE_URL=https://your-domain.example
 TSUZURI_DOMAIN=your-domain.example
 TSUZURI_USERNAME=your-username
+TSUZURI_EMAIL=admin@example.com
+TSUZURI_PASSWORD=change-me
 TSUZURI_SOURCE_URL=https://github.com/S-H-GAMELINKS/tsuzuri
 ```
 
@@ -28,15 +45,29 @@ TSUZURI_SOURCE_URL=https://github.com/S-H-GAMELINKS/tsuzuri
 
 `TSUZURI_SOURCE_URL` is used for the source code link (AGPL compliance). If you fork the project, change this to your repository URL.
 
-### 2. Configure `.kamal/secrets`
+`TSUZURI_EMAIL` / `TSUZURI_PASSWORD` are used for the initial seed account during first `db:prepare` (seeding is skipped if an account already exists).
+
+### 2. Generate production credentials
+
+Generate `config/credentials/production.yml.enc` and `config/credentials/production.key`:
 
 ```bash
-RAILS_MASTER_KEY=$(cat config/master.key)
+RAILS_ENV=production bin/rails credentials:edit
+```
+
+When you close the editor, Rails creates (or updates) both files.
+
+### 3. Configure `.kamal/secrets`
+
+```bash
+RAILS_MASTER_KEY=$(cat config/credentials/production.key)
 ```
 
 Only `RAILS_MASTER_KEY` is needed. No registry password is required when using the local registry.
 
-### 3. About the Registry
+Do not commit `config/credentials/production.key` to git.
+
+### 4. About the Registry
 
 The default `registry.server: localhost:5555` works as-is. Kamal automatically runs a local registry on the deployment server, so no external registry account or token is required.
 
