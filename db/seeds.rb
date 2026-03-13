@@ -1,4 +1,7 @@
 require "openssl"
+require "dotenv"
+
+Dotenv.load(".env") 
 
 return if Account.exists?
 
