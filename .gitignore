@@ -31,3 +31,7 @@ spec/examples.txt
 .vscode/
 
 .env
+
+# Ignore key files for decrypting credentials and more.
+/config/credentials/*.key
+
