@@ -42,9 +42,6 @@ class RodauthMain < Rodauth::Rails::Auth
     # Store password hash in a column instead of a separate table.
     account_password_hash_column :password_hash
 
-    # Set password when creating account instead of when verifying.
-    verify_account_set_password? false
-
     # Change some default param keys.
     login_param "email"
     login_confirm_param "email-confirm"
@@ -126,9 +123,6 @@ class RodauthMain < Rodauth::Rails::Auth
     # ==> Redirects
     # Redirect to home page after logout.
     logout_redirect "/"
-
-    # Redirect to wherever login redirects to after account verification.
-    verify_account_redirect { login_redirect }
 
     # Redirect to login page after password reset.
     reset_password_redirect { login_path }
